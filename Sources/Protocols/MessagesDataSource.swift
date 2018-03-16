@@ -71,6 +71,11 @@ public protocol MessagesDataSource: AnyObject {
     /// The default value returned by this method is `nil`.
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString?
 
+    
+    // 设置用户标识图片
+    func cellUserIconImage(for message: MessageType, at indexPath: IndexPath) -> UIImage?
+
+    
 }
 
 public extension MessagesDataSource {
@@ -87,4 +92,8 @@ public extension MessagesDataSource {
         return nil
     }
 
+    func cellUserIconImage(for message: MessageType, at indexPath: IndexPath) -> UIImage? {
+        return nil
+    }
+    
 }

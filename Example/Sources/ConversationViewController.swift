@@ -54,7 +54,8 @@ class ConversationViewController: MessagesViewController {
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messageCellDelegate = self
         messageInputBar.delegate = self
-
+        messageInputBar.maxTextViewHeight = 100
+        messageInputBar.shouldAutoUpdateMaxTextViewHeight = false
         messageInputBar.sendButton.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
         scrollsToBottomOnKeybordBeginsEditing = true // default false
         maintainPositionOnKeyboardFrameChanged = true // default false
@@ -274,19 +275,20 @@ extension ConversationViewController: MessagesDataSource {
         return NSAttributedString(string: name, attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
     }
 
-    func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        
-        struct ConversationDateFormatter {
-            static let formatter: DateFormatter = {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .medium
-                return formatter
-            }()
-        }
-        let formatter = ConversationDateFormatter.formatter
-        let dateString = formatter.string(from: message.sentDate)
-        return NSAttributedString(string: dateString, attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption2)])
-    }
+    //底部时间
+//    func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+//
+//        struct ConversationDateFormatter {
+//            static let formatter: DateFormatter = {
+//                let formatter = DateFormatter()
+//                formatter.dateStyle = .medium
+//                return formatter
+//            }()
+//        }
+//        let formatter = ConversationDateFormatter.formatter
+//        let dateString = formatter.string(from: message.sentDate)
+//        return NSAttributedString(string: dateString, attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption2)])
+//    }
 
 }
 
@@ -315,15 +317,28 @@ extension ConversationViewController: MessagesDisplayDelegate {
     }
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
-        let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
-        return .bubbleTail(corner, .curved)
-//        let configurationClosure = { (view: MessageContainerView) in}
-//        return .custom(configurationClosure)
+//        let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+//        return .bubbleTail(corner, .curved)
+        let configurationClosure = { (view: MessageContainerView) in
+            
+            view.layer.cornerRadius = 5
+            view.layer.masksToBounds = true
+//            view.imag = UIImage(named: "bubble_background")
+//            view.backgroundColor = UIColor.blue
+//            if message.sender == self.currentSender() {
+//                view.frame.origin.x = 25
+//            }else {
+//                view.frame.origin.x = 40
+//            }
+//            print(view.frame)
+        }
+        return .custom(configurationClosure)
     }
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         let avatar = SampleData.shared.getAvatarFor(sender: message.sender)
         avatarView.set(avatar: avatar)
+//        avatarView.frame.origin.y = 0
     }
 
     // MARK: - Location Messages
@@ -358,22 +373,22 @@ extension ConversationViewController: MessagesDisplayDelegate {
 extension ConversationViewController: MessagesLayoutDelegate {
 
     func avatarPosition(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> AvatarPosition {
-        return AvatarPosition(horizontal: .natural, vertical: .messageBottom)
+        return AvatarPosition(horizontal: .natural, vertical: .messageTop)
     }
 
     func messagePadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
         if isFromCurrentSender(message: message) {
-            return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 4)
+            return UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 12)
         } else {
-            return UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 30)
+            return UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 13)
         }
     }
 
     func cellTopLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment {
         if isFromCurrentSender(message: message) {
-            return .messageTrailing(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10))
+            return .messageTrailing(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         } else {
-            return .messageLeading(UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
+            return .messageLeading(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         }
     }
 
@@ -385,6 +400,10 @@ extension ConversationViewController: MessagesLayoutDelegate {
         }
     }
 
+    func headerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return CGSize(width: messagesCollectionView.bounds.width, height: 40)
+    }
+    
     func footerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
 
         return CGSize(width: messagesCollectionView.bounds.width, height: 10)

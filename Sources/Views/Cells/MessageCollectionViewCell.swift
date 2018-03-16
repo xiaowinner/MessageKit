@@ -39,6 +39,11 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return containerView
     }()
 
+    open var userIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -66,6 +71,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
+        contentView.addSubview(userIconImageView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
     }
@@ -97,7 +103,6 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {
             fatalError(MessageKitError.nilMessagesDisplayDelegate)
         }
-
         delegate = messagesCollectionView.messageCellDelegate
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
@@ -105,12 +110,24 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
 
+        
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
 
         let topText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
         let bottomText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
+        let iconImage = dataSource.cellUserIconImage(for: message, at: indexPath)
+        
+        var point = CGPoint()
+        let size = CGSize(width: 14, height: 14)
+        if dataSource.isFromCurrentSender(message: message) {
+            point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
+        }else {
+            point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
+        }
+        userIconImageView.frame = CGRect(origin: point, size: size)
 
+        userIconImageView.image = iconImage
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
     }
