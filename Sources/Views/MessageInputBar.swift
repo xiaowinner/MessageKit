@@ -130,7 +130,7 @@ open class MessageInputBar: UIView {
             .configure {
                 $0.setSize(CGSize(width: 52, height: 28), animated: false)
                 $0.isEnabled = false
-                $0.title = "Send"
+                $0.title = "发送"
                 $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
             }.onTouchUpInside {
                 $0.messageInputBar?.didSelectSendButton()
@@ -339,7 +339,7 @@ open class MessageInputBar: UIView {
     private func setupConstraints() {
         
         // The constraints within the MessageInputBar
-        separatorLine.addConstraints(topAnchor, left: leftAnchor, right: rightAnchor, heightConstant: 1)
+        separatorLine.addConstraints(topAnchor, left: leftAnchor, right: rightAnchor, heightConstant: 0.5)
         backgroundViewBottomAnchor = backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
         backgroundViewBottomAnchor?.isActive = true
         backgroundView.addConstraints(topStackView.bottomAnchor, left: leftAnchor, right: rightAnchor)

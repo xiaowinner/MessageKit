@@ -159,11 +159,17 @@ open class InputTextView: UITextView {
                                              right: .leastNonzeroMagnitude)
         isScrollEnabled = false
         layer.cornerRadius = 5.0
-        layer.borderWidth = 1.25
-        layer.borderColor = UIColor.lightGray.cgColor
+        layer.masksToBounds = true
+        layer.borderWidth = 0.5
+        layer.borderColor = UIColor(red: 232/255, green: 232/255, blue: 232/255, alpha: 1).cgColor
         allowsEditingTextAttributes = false
         setupPlaceholderLabel()
         setupObservers()
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = self.frame.size.height/2
     }
     
     /// Adds the placeholderLabel to the view and sets up its initial constraints
