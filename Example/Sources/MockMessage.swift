@@ -28,6 +28,7 @@ import CoreLocation
 
 struct MockMessage: MessageType {
     
+    var userAvt: String
 	var messageId: String
 	var sender: Sender
 	var sentDate: Date
@@ -40,6 +41,7 @@ struct MockMessage: MessageType {
 		self.messageId = messageId
 		self.sentDate = date
         self.sendDateString = dateString;
+        self.userAvt = ""
 	}
 	
     init(text: String, sender: Sender, messageId: String, date: Date, dateString:String) {
