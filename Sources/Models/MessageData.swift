@@ -51,6 +51,9 @@ public enum MessageData {
 
     /// An emoji message.
     case emoji(String)
+    
+    // 加载图片
+    case imageUrl(String)
 
     // MARK: - Not supported yet
 
