@@ -40,6 +40,8 @@ public protocol MessageType {
     /// The date the message was sent.
     var sentDate: Date { get }
 
+    var sendDateString: String { get }
+    
     /// The kind of message and its underlying data.
     var data: MessageData { get }
 

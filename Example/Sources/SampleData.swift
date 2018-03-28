@@ -152,23 +152,25 @@ final class SampleData {
         let uniqueID = NSUUID().uuidString
         let sender = senders[randomNumberSender]
         let date = dateAddingRandomTime()
+        let dateString = ""
 
         switch messageTypes[randomMessageType] {
         case "Text":
-            return MockMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
+            
         case "AttributedText":
             let attributedText = attributedString(with: messageTextValues[randomNumberText])
-            return MockMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date)
+            return MockMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date, dateString: dateString)
         case "Photo":
             let image = messageImages[randomNumberImage]
-            return MockMessage(image: image, sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(image: image, sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         case "Video":
             let image = messageImages[randomNumberImage]
-            return MockMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         case "Location":
-            return MockMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         case "Emoji":
-            return MockMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         default:
             fatalError("Unrecognized mock message type")
         }

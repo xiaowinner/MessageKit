@@ -474,7 +474,7 @@ extension ConversationViewController: MessageInputBarDelegate {
             
             if let image = component as? UIImage {
                 
-                let imageMessage = MockMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let imageMessage = MockMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date(), dateString: "")
                 messageList.append(imageMessage)
                 messagesCollectionView.insertSections([messageList.count - 1])
                 
@@ -482,7 +482,7 @@ extension ConversationViewController: MessageInputBarDelegate {
                 
                 let attributedText = NSAttributedString(string: text, attributes: [.font: UIFont.systemFont(ofSize: 15), .foregroundColor: UIColor.blue])
                 
-                let message = MockMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let message = MockMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date(), dateString: "")
                 messageList.append(message)
                 messagesCollectionView.insertSections([messageList.count - 1])
             }
