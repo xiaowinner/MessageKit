@@ -46,7 +46,7 @@ extension MessagesViewController {
     private func handleTextViewDidBeginEditing(_ notification: Notification) {
         if scrollsToBottomOnKeybordBeginsEditing {
             guard let inputTextView = notification.object as? InputTextView, inputTextView === messageInputBar.inputTextView else { return }
-            messagesCollectionView.scrollToBottom(animated: true)
+            messagesCollectionView.YXWScrollToBottom(animated: true)
         }
     }
 

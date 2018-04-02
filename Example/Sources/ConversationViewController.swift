@@ -44,7 +44,7 @@ class ConversationViewController: MessagesViewController {
                 DispatchQueue.main.async {
                     self.messageList = messages
                     self.messagesCollectionView.reloadData()
-                    self.messagesCollectionView.scrollToBottom()
+                    self.messagesCollectionView.YXWScrollToBottom()
                 }
             }
         }
@@ -490,7 +490,7 @@ extension ConversationViewController: MessageInputBarDelegate {
         }
         
         inputBar.inputTextView.text = String()
-        messagesCollectionView.scrollToBottom()
+        messagesCollectionView.YXWScrollToBottom()
     }
 
 }

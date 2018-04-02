@@ -81,7 +81,7 @@ open class MessagesCollectionView: UICollectionView {
         cell?.handleTapGesture(gesture)
     }
 
-    public func scrollToBottom(animated: Bool = false) {
+    public func YXWScrollToBottom(animated: Bool = false) {
         let collectionViewContentHeight = collectionViewLayout.collectionViewContentSize.height
 
         performBatchUpdates(nil) { _ in
