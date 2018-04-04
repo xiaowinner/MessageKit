@@ -71,6 +71,11 @@ open class MessagesViewController: UIViewController {
         }
     }
 
+    
+    //控制是否计算 顶部Bar 的偏移量
+    open var notCalculateTopBarHeight: Bool = false
+
+    
     // MARK: - View Life Cycle
 
     open override func viewDidLoad() {
