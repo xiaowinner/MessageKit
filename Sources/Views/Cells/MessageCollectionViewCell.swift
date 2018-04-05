@@ -1,18 +1,18 @@
 /*
  MIT License
-
+ 
  Copyright (c) 2017-2018 MessageKit
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,20 +25,20 @@
 import UIKit
 
 open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusable {
-
+    
     open class func reuseIdentifier() -> String {
         return "messagekit.cell.base-cell"
     }
-
+    
     open var avatarView = AvatarView()
-
+    
     open var messageContainerView: MessageContainerView = {
         let containerView = MessageContainerView()
         containerView.clipsToBounds = true
         containerView.layer.masksToBounds = true
         return containerView
     }()
-
+    
     open var userIconImageView: UIImageView = {
         let imageView = UIImageView()
         return imageView
@@ -47,34 +47,36 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open var timeLabel: UILabel = {
         let timeLabel = UILabel()
         timeLabel.textColor = UIColor(red: 135/255, green: 135/255, blue: 135/255, alpha: 1)
-        timeLabel.font = UIFont.systemFont(ofSize: 14)
+        timeLabel.font = UIFont.systemFont(ofSize: 11)
         return timeLabel
     }()
     
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
+        label.textColor = UIColor.black
+        label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight(rawValue: 0.3))
         return label
     }()
-
+    
     open var cellBottomLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
-
+    
     open weak var delegate: MessageCellDelegate?
-
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
     }
-
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
@@ -83,7 +85,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
     }
-
+    
     open override func prepareForReuse() {
         super.prepareForReuse()
         cellTopLabel.text = nil
@@ -91,9 +93,9 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellBottomLabel.text = nil
         cellBottomLabel.attributedText = nil
     }
-
+    
     // MARK: - Configuration
-
+    
     open override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
         if let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes {
@@ -103,7 +105,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             messageContainerView.frame = attributes.messageContainerFrame
         }
     }
-
+    
     open func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         guard let dataSource = messagesCollectionView.messagesDataSource else {
             fatalError(MessageKitError.nilMessagesDataSource)
@@ -112,16 +114,16 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
             fatalError(MessageKitError.nilMessagesDisplayDelegate)
         }
         delegate = messagesCollectionView.messageCellDelegate
-
+        
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
         
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
-
+        
         
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
-
+        
         let topText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
         let bottomText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
         let iconImage = dataSource.cellUserIconImage(for: message, at: indexPath)
@@ -135,29 +137,35 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         
         if dataSource.isFromCurrentSender(message: message) {
             point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 28 - 5, y: cellTopLabel.frame.origin.y)
+            timePoint = CGPoint(x: point.x - 5, y: point.y)
         }else {
             point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
             timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
         }
+        
         userIconImageView.frame = CGRect(origin: point, size: size)
         userIconImageView.image = iconImage
-
         
-        timeLabel.frame = CGRect(origin: timePoint, size: size)
-        timeLabel.frame.origin = timePoint
-        timeLabel.adjustsFontSizeToFitWidth = true
-        timeLabel.text = timeText
-        timeLabel.sizeToFit()
-
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
+        
+        timeLabel.frame = CGRect(origin: timePoint, size: size)
+        timeLabel.text = timeText
+        timeLabel.sizeToFit()
+        
+        
+        if dataSource.isFromCurrentSender(message: message) {
+            timePoint = CGPoint(x: point.x - 5 - timeLabel.frame.size.width, y: point.y)
+        }else {
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
+        }
+        timeLabel.frame.origin = timePoint
     }
-
+    
     /// Handle tap gesture on contentView and its subviews like messageContainerView, cellTopLabel, cellBottomLabel, avatarView ....
     open func handleTapGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
-
+        
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
             delegate?.didTapMessage(in: self)
@@ -178,7 +186,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
         return messageContainerView.frame.contains(touchPoint)
     }
-
+    
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture
     open func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
         return false
