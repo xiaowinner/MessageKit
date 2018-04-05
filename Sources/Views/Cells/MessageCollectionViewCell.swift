@@ -44,6 +44,13 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         return imageView
     }()
     
+    open var timeLabel: UILabel = {
+        let timeLabel = UILabel()
+        timeLabel.textColor = UIColor(red: 135/255, green: 135/255, blue: 135/255, alpha: 1)
+        timeLabel.font = UIFont.systemFont(ofSize: 14)
+        return timeLabel
+    }()
+    
     open var cellTopLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -72,6 +79,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(userIconImageView)
+        contentView.addSubview(timeLabel)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
     }
@@ -118,16 +126,30 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         let bottomText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
         let iconImage = dataSource.cellUserIconImage(for: message, at: indexPath)
         
+        let timeText = dataSource.cellMessageTime(for: message, at: indexPath)
+        
         var point = CGPoint()
+        var timePoint = CGPoint()
         let size = CGSize(width: 14, height: 14)
+        
+        
         if dataSource.isFromCurrentSender(message: message) {
             point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 28 - 5, y: cellTopLabel.frame.origin.y)
         }else {
             point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
         }
         userIconImageView.frame = CGRect(origin: point, size: size)
-
         userIconImageView.image = iconImage
+
+        
+        timeLabel.frame = CGRect(origin: timePoint, size: size)
+        timeLabel.frame.origin = timePoint
+        timeLabel.adjustsFontSizeToFitWidth = true
+        timeLabel.text = timeText
+        timeLabel.sizeToFit()
+
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
     }
