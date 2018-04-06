@@ -48,6 +48,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         let timeLabel = UILabel()
         timeLabel.textColor = UIColor(red: 135/255, green: 135/255, blue: 135/255, alpha: 1)
         timeLabel.font = UIFont.systemFont(ofSize: 11)
+        timeLabel.textAlignment = .center
         return timeLabel
     }()
     
@@ -134,13 +135,10 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         var timePoint = CGPoint()
         let size = CGSize(width: 14, height: 14)
         
-        
         if dataSource.isFromCurrentSender(message: message) {
             point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
-            timePoint = CGPoint(x: point.x - 5, y: point.y)
         }else {
             point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
         }
         
         userIconImageView.frame = CGRect(origin: point, size: size)
@@ -149,15 +147,17 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
         
-        timeLabel.frame = CGRect(origin: timePoint, size: size)
+        let timeSize = CGSize(width: 14, height: cellTopLabel.frame.size.height)
+        timeLabel.frame = CGRect(origin: timePoint, size: timeSize)
         timeLabel.text = timeText
         timeLabel.sizeToFit()
         
-        
         if dataSource.isFromCurrentSender(message: message) {
-            timePoint = CGPoint(x: point.x - 5 - timeLabel.frame.size.width, y: point.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 5 - timeLabel.frame.size.width, y: point.y + 3)
+            userIconImageView.isHidden = true
         }else {
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y + 3)
+            userIconImageView.isHidden = false
         }
         timeLabel.frame.origin = timePoint
     }
