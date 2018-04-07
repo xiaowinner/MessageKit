@@ -1,18 +1,18 @@
 /*
  MIT License
-
+ 
  Copyright (c) 2017-2018 MessageKit
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,15 +25,15 @@
 import UIKit
 
 open class MessageLabel: UILabel {
-
+    
     // MARK: - Private Properties
-
+    
     private lazy var layoutManager: NSLayoutManager = {
         let layoutManager = NSLayoutManager()
         layoutManager.addTextContainer(self.textContainer)
         return layoutManager
     }()
-
+    
     private lazy var textContainer: NSTextContainer = {
         let textContainer = NSTextContainer()
         textContainer.lineFragmentPadding = 0
@@ -42,79 +42,79 @@ open class MessageLabel: UILabel {
         textContainer.size = self.bounds.size
         return textContainer
     }()
-
+    
     private lazy var textStorage: NSTextStorage = {
         let textStorage = NSTextStorage()
         textStorage.addLayoutManager(self.layoutManager)
         return textStorage
     }()
-
+    
     private lazy var rangesForDetectors: [DetectorType: [(NSRange, MessageTextCheckingType)]] = [:]
     
     private var isConfiguring: Bool = false
-
+    
     // MARK: - Public Properties
-
+    
     open weak var delegate: MessageLabelDelegate?
-
+    
     open var enabledDetectors: [DetectorType] = [] {
         didSet {
             setTextStorage(attributedText, shouldParse: true)
         }
     }
-
+    
     open override var attributedText: NSAttributedString? {
         didSet {
             setTextStorage(attributedText, shouldParse: true)
         }
     }
-
+    
     open override var text: String? {
         didSet {
             setTextStorage(attributedText, shouldParse: true)
         }
     }
-
+    
     open override var font: UIFont! {
         didSet {
             setTextStorage(attributedText, shouldParse: false)
         }
     }
-
+    
     open override var textColor: UIColor! {
         didSet {
             setTextStorage(attributedText, shouldParse: false)
         }
     }
-
+    
     open override var lineBreakMode: NSLineBreakMode {
         didSet {
             textContainer.lineBreakMode = lineBreakMode
             if !isConfiguring { setNeedsDisplay() }
         }
     }
-
+    
     open override var numberOfLines: Int {
         didSet {
             textContainer.maximumNumberOfLines = numberOfLines
             if !isConfiguring { setNeedsDisplay() }
         }
     }
-
+    
     open override var textAlignment: NSTextAlignment {
         didSet {
             setTextStorage(attributedText, shouldParse: false)
         }
     }
-
+    
     open var textInsets: UIEdgeInsets = .zero {
         didSet {
             if !isConfiguring { setNeedsDisplay() }
         }
     }
-
+    
     private var attributesNeedUpdate = false
-
+    
     public static var defaultAttributes: [NSAttributedStringKey: Any] = {
         return [
             NSAttributedStringKey.foregroundColor: UIColor.darkText,
@@ -122,15 +122,15 @@ open class MessageLabel: UILabel {
             NSAttributedStringKey.underlineColor: UIColor.darkText
         ]
     }()
-
+    
     open internal(set) var addressAttributes: [NSAttributedStringKey: Any] = defaultAttributes
-
+    
     open internal(set) var dateAttributes: [NSAttributedStringKey: Any] = defaultAttributes
-
+    
     open internal(set) var phoneNumberAttributes: [NSAttributedStringKey: Any] = defaultAttributes
-
+    
     open internal(set) var urlAttributes: [NSAttributedStringKey: Any] = defaultAttributes
-
+    
     public func setAttributes(_ attributes: [NSAttributedStringKey: Any], detector: DetectorType) {
         switch detector {
         case .phoneNumber:
@@ -148,33 +148,33 @@ open class MessageLabel: UILabel {
             updateAttributes(for: [detector])
         }
     }
-
+    
     // MARK: - Initializers
-
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         self.numberOfLines = 0
         self.lineBreakMode = .byWordWrapping
     }
-
+    
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - Open Methods
-
+    
     open override func drawText(in rect: CGRect) {
-
+        
         let insetRect = UIEdgeInsetsInsetRect(rect, textInsets)
         textContainer.size = CGSize(width: insetRect.width, height: rect.height)
-
+        
         let origin = insetRect.origin
         let range = layoutManager.glyphRange(for: textContainer)
-
+        
         layoutManager.drawBackground(forGlyphRange: range, at: origin)
         layoutManager.drawGlyphs(forGlyphRange: range, at: origin)
     }
-
+    
     // MARK: - Public Methods
     
     public func configure(block: () -> Void) {
@@ -187,11 +187,11 @@ open class MessageLabel: UILabel {
         isConfiguring = false
         setNeedsDisplay()
     }
-
+    
     // MARK: - Private Methods
-
+    
     private func setTextStorage(_ newText: NSAttributedString?, shouldParse: Bool) {
-
+        
         guard let newText = newText, newText.length > 0 else {
             textStorage.setAttributedString(NSAttributedString())
             setNeedsDisplay()
@@ -218,12 +218,12 @@ open class MessageLabel: UILabel {
                 }
             }
         }
-
+        
         let modifiedText = NSAttributedString(attributedString: mutableText)
         textStorage.setAttributedString(modifiedText)
-
+        
         if !isConfiguring { setNeedsDisplay() }
-
+        
     }
     
     private func paragraphStyle(for text: NSAttributedString) -> NSParagraphStyle {
@@ -238,27 +238,27 @@ open class MessageLabel: UILabel {
         
         return style
     }
-
+    
     private func updateAttributes(for detectors: [DetectorType]) {
-
+        
         guard let attributedText = attributedText, attributedText.length > 0 else { return }
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
-
+        
         for detector in detectors {
             guard let rangeTuples = rangesForDetectors[detector] else { continue }
-
+            
             for (range, _)  in rangeTuples {
                 let attributes = detectorAttributes(for: detector)
                 mutableAttributedString.addAttributes(attributes, range: range)
             }
-
+            
             let updatedString = NSAttributedString(attributedString: mutableAttributedString)
             textStorage.setAttributedString(updatedString)
         }
     }
-
+    
     private func detectorAttributes(for detectorType: DetectorType) -> [NSAttributedStringKey: Any] {
-
+        
         switch detectorType {
         case .address:
             return addressAttributes
@@ -269,9 +269,9 @@ open class MessageLabel: UILabel {
         case .url:
             return urlAttributes
         }
-
+        
     }
-
+    
     private func detectorAttributes(for checkingResultType: NSTextCheckingResult.CheckingType) -> [NSAttributedStringKey: Any] {
         switch checkingResultType {
         case .address:
@@ -286,9 +286,9 @@ open class MessageLabel: UILabel {
             fatalError(MessageKitError.unrecognizedCheckingResult)
         }
     }
-
+    
     // MARK: - Parsing Text
-
+    
     private func parse(text: NSAttributedString) -> [NSTextCheckingResult] {
         guard enabledDetectors.isEmpty == false else { return [] }
         let checkingTypes = enabledDetectors.reduce(0) { $0 | $1.textCheckingType.rawValue }
@@ -296,13 +296,13 @@ open class MessageLabel: UILabel {
         let range = NSRange(location: 0, length: text.length)
         return detector?.matches(in: text.string, options: [], range: range) ?? []
     }
-
+    
     private func setRangesForDetectors(in checkingResults: [NSTextCheckingResult]) {
-
+        
         guard checkingResults.isEmpty == false else { return }
         
         for result in checkingResults {
-
+            
             switch result.resultType {
             case .address:
                 var ranges = rangesForDetectors[.address] ?? []
@@ -327,24 +327,24 @@ open class MessageLabel: UILabel {
             default:
                 fatalError("Received an unrecognized NSTextCheckingResult.CheckingType")
             }
-
+            
         }
-
+        
     }
-
+    
     // MARK: - Gesture Handling
-
+    
     private func stringIndex(at location: CGPoint) -> Int? {
         guard textStorage.length > 0 else { return nil }
-
+        
         var location = location
         let textOffset = CGPoint(x: textInsets.left, y: textInsets.right)
-
+        
         location.x -= textOffset.x
         location.y -= textOffset.y
-
+        
         let index = layoutManager.glyphIndex(for: location, in: textContainer)
-
+        
         let lineRect = layoutManager.lineFragmentUsedRect(forGlyphAt: index, effectiveRange: nil)
         
         var characterIndex: Int?
@@ -354,24 +354,76 @@ open class MessageLabel: UILabel {
         }
         
         return characterIndex
-
+        
     }
-
-  func handleGesture(_ touchLocation: CGPoint) -> Bool {
-
+    
+    func handleGesture(_ touchLocation: CGPoint) -> Bool {
         guard let index = stringIndex(at: touchLocation) else { return false }
-
-        for (detectorType, ranges) in rangesForDetectors {
-            for (range, value) in ranges {
-                if range.contains(index) {
-                    handleGesture(for: detectorType, value: value)
-                    return true
+        guard let currentLength = self.attributedText?.length else {
+            return false
+        }
+        if index < currentLength {
+            print(index)
+            print(currentLength)
+            let selectedAttributes = attributedText?.attributedSubstring(from: NSMakeRange(index, 1))
+            print(selectedAttributes)
+            selectedAttributes?.enumerateAttribute(NSAttributedStringKey.link, in: NSMakeRange(0, (selectedAttributes?.length)!), options: NSAttributedString.EnumerationOptions(rawValue: 0), using: { (value, range, pointer) in
+                print(value)
+                if let myValue = value as? URL {
+                    handleURL(myValue)
                 }
-            }
+            })
+            selectedAttributes?.enumerateAttribute(NSAttributedStringKey.attachment, in: NSMakeRange(0, (selectedAttributes?.length)!), options: NSAttributedString.EnumerationOptions(rawValue: 0), using: { (value, range, pointer) in
+                print(value)
+                if let myValue = value as? NSTextAttachment {
+                    if let wrapper = myValue.fileWrapper {
+                        var home = NSHomeDirectory() as NSString
+                        let cachePath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).last!
+                        if let pathNum = createRandomMan(start: 1000, end: 100000)() {
+                            let filePath = cachePath + "/\(pathNum).jpg"
+                            print(filePath)
+                            do {
+                                try wrapper.write(to: URL(fileURLWithPath: filePath), options: FileWrapper.WritingOptions.atomic, originalContentsURL: nil)
+                                
+                                if let image = UIImage(contentsOfFile: filePath) {
+                                    handleImage(image)
+                                }
+                            } catch let error {
+                                print("读写错误\(error)")
+                            }
+                            
+                        }
+                    }
+                }
+            })
         }
         return false
     }
-
+    
+    
+    //随机数生成器函数
+    private func createRandomMan(start: Int, end: Int) ->() ->Int! {
+        //根据参数初始化可选值数组
+        var nums = [Int]();
+        for i in start...end{
+            nums.append(i)
+        }
+        
+        func randomMan() -> Int! {
+            if !nums.isEmpty {
+                //随机返回一个数，同时从数组里删除
+                let index = Int(arc4random_uniform(UInt32(nums.count)))
+                return nums.remove(at: index)
+            }
+            else {
+                //所有值都随机完则返回nil
+                return nil
+            }
+        }
+        
+        return randomMan
+    }
+    
     private func handleGesture(for detectorType: DetectorType, value: MessageTextCheckingType) {
         
         switch value {
@@ -404,6 +456,10 @@ open class MessageLabel: UILabel {
     
     private func handleURL(_ url: URL) {
         delegate?.didSelectURL(url)
+    }
+    
+    private func handleImage(_ image: UIImage) {
+        delegate?.didSelectImage(image)
     }
     
     private func handlePhoneNumber(_ phoneNumber: String) {
