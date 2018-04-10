@@ -366,25 +366,24 @@ open class MessageLabel: UILabel {
             print(index)
             print(currentLength)
             let selectedAttributes = attributedText?.attributedSubstring(from: NSMakeRange(index, 1))
-            print(selectedAttributes)
+            
+  
             selectedAttributes?.enumerateAttribute(NSAttributedStringKey.link, in: NSMakeRange(0, (selectedAttributes?.length)!), options: NSAttributedString.EnumerationOptions(rawValue: 0), using: { (value, range, pointer) in
-                print(value)
                 if let myValue = value as? URL {
                     handleURL(myValue)
                 }
             })
+            
+            
             selectedAttributes?.enumerateAttribute(NSAttributedStringKey.attachment, in: NSMakeRange(0, (selectedAttributes?.length)!), options: NSAttributedString.EnumerationOptions(rawValue: 0), using: { (value, range, pointer) in
-                print(value)
                 if let myValue = value as? NSTextAttachment {
                     if let wrapper = myValue.fileWrapper {
-                        var home = NSHomeDirectory() as NSString
                         let cachePath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).last!
                         if let pathNum = createRandomMan(start: 1000, end: 100000)() {
                             let filePath = cachePath + "/\(pathNum).jpg"
                             print(filePath)
                             do {
                                 try wrapper.write(to: URL(fileURLWithPath: filePath), options: FileWrapper.WritingOptions.atomic, originalContentsURL: nil)
-                                
                                 if let image = UIImage(contentsOfFile: filePath) {
                                     handleImage(image)
                                 }
@@ -396,6 +395,8 @@ open class MessageLabel: UILabel {
                     }
                 }
             })
+            
+            
         }
         return false
     }
