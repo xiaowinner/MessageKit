@@ -153,10 +153,10 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         timeLabel.sizeToFit()
         
         if dataSource.isFromCurrentSender(message: message) {
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 5 - timeLabel.frame.size.width, y: point.y + 3)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 5 - timeLabel.frame.size.width, y: point.y)
             userIconImageView.isHidden = true
         }else {
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y + 3)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
             userIconImageView.isHidden = false
         }
         timeLabel.frame.origin = timePoint
