@@ -46,8 +46,8 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     
     open var timeLabel: UILabel = {
         let timeLabel = UILabel()
-        timeLabel.textColor = UIColor(red: 135/255, green: 135/255, blue: 135/255, alpha: 1)
-        timeLabel.font = UIFont.systemFont(ofSize: 11)
+        timeLabel.textColor = UIColor(red: 203/255, green: 202/255, blue: 202/255, alpha: 1)
+        timeLabel.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight(rawValue: 0.3))
         timeLabel.textAlignment = .center
         return timeLabel
     }()
