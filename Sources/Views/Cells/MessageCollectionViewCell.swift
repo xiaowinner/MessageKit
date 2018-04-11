@@ -81,7 +81,7 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
     open func setupSubviews() {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
-        contentView.addSubview(userIconImageView)
+//        contentView.addSubview(userIconImageView)
         contentView.addSubview(timeLabel)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(cellBottomLabel)
@@ -127,22 +127,22 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         
         let topText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
         let bottomText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
-        let iconImage = dataSource.cellUserIconImage(for: message, at: indexPath)
+//        let iconImage = dataSource.cellUserIconImage(for: message, at: indexPath)
         
         let timeText = dataSource.cellMessageTime(for: message, at: indexPath)
         
-        var point = CGPoint()
+//        var point = CGPoint()
         var timePoint = CGPoint()
-        let size = CGSize(width: 14, height: 14)
+//        let size = CGSize(width: 14, height: 14)
         
-        if dataSource.isFromCurrentSender(message: message) {
-            point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
-        }else {
-            point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
-        }
-        
-        userIconImageView.frame = CGRect(origin: point, size: size)
-        userIconImageView.image = iconImage
+//        if dataSource.isFromCurrentSender(message: message) {
+//            point = CGPoint(x: cellTopLabel.frame.origin.x - 14 - 5, y: cellTopLabel.frame.origin.y)
+//        }else {
+//            point = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5, y: cellTopLabel.frame.origin.y)
+//        }
+//
+//        userIconImageView.frame = CGRect(origin: point, size: size)
+//        userIconImageView.image = iconImage
         
         cellTopLabel.attributedText = topText
         cellBottomLabel.attributedText = bottomText
@@ -153,10 +153,10 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         timeLabel.sizeToFit()
         
         if dataSource.isFromCurrentSender(message: message) {
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 5 - timeLabel.frame.size.width, y: point.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x - 7, y: cellTopLabel.frame.origin.y)
             userIconImageView.isHidden = true
         }else {
-            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 5 + 14 + 5, y: cellTopLabel.frame.origin.y)
+            timePoint = CGPoint(x: cellTopLabel.frame.origin.x + cellTopLabel.frame.size.width + 7, y: cellTopLabel.frame.origin.y)
             userIconImageView.isHidden = false
         }
         timeLabel.frame.origin = timePoint
