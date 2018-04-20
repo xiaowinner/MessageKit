@@ -70,7 +70,7 @@ final class SampleData {
 
     var now = Date()
 
-    let messageTypes = ["Text", "Text", "Text", "AttributedText", "Photo", "Video", "Location", "Emoji"]
+    let messageTypes = ["Text", "Text", "Text", "AttributedText", "Photo", "Video", "Location", "Emoji", "System"]
 
     let attributes = ["Font1", "Font2", "Font3", "Font4", "Color", "Combo"]
 
@@ -171,6 +171,8 @@ final class SampleData {
             return MockMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         case "Emoji":
             return MockMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
+        case "System":
+            return MockMessage(system: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date, dateString: dateString)
         default:
             fatalError("Unrecognized mock message type")
         }

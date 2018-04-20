@@ -77,7 +77,7 @@ open class TextMessageCell: MessageCollectionViewCell {
                 messageLabel.setAttributes(attributes, detector: detector)
             }
             switch message.data {
-            case .text(let text), .emoji(let text):
+            case .text(let text), .emoji(let text), .system(let text):
                 messageLabel.text = text
             case .attributedText(let text):
                 messageLabel.attributedText = text

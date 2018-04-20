@@ -55,6 +55,9 @@ public enum MessageData {
     // 加载图片
     case imageUrl(String)
 
+    // 系统
+    case system(String)
+    
     // MARK: - Not supported yet
 
 //    case audio(Data)

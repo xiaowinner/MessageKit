@@ -279,7 +279,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         switch intermediateAttributes.message.data {
         case .emoji:
             attributes.messageLabelFont = emojiLabelFont
-        case .text:
+        case .text, .system:
             attributes.messageLabelFont = messageLabelFont
         case .attributedText(let text):
             guard let font = text.attribute(.font, at: 0, effectiveRange: nil) as? UIFont else { return }
@@ -401,6 +401,8 @@ private extension MessagesCollectionViewFlowLayout {
         switch attributes.message.data {
         case .text, .attributedText:
             return itemWidth - attributes.avatarSize.width - attributes.messageHorizontalPadding - attributes.messageLabelHorizontalInsets
+        case .system:
+            return UIScreen.main.bounds.size.width - attributes.messageHorizontalPadding - attributes.messageLabelHorizontalInsets
         default:
             return itemWidth - attributes.avatarSize.width - attributes.messageHorizontalPadding
         }
@@ -425,6 +427,10 @@ private extension MessagesCollectionViewFlowLayout {
         case .text(let text):
             messageContainerSize = labelSize(for: text, considering: maxWidth, and: messageLabelFont)
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
+            messageContainerSize.height += attributes.messageLabelVerticalInsets
+        case .system(let text):
+            messageContainerSize = labelSize(for: text, considering: maxWidth, and: messageLabelFont)
+            messageContainerSize.width = UIScreen.main.bounds.size.width - attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
         case .attributedText(let text):
             messageContainerSize = labelSize(for: text, considering: maxWidth)

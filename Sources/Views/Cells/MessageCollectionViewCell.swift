@@ -121,7 +121,6 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
         
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
         
-        
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
         
@@ -144,12 +143,22 @@ open class MessageCollectionViewCell: UICollectionViewCell, CollectionViewReusab
 //        userIconImageView.frame = CGRect(origin: point, size: size)
 //        userIconImageView.image = iconImage
         
-        cellTopLabel.attributedText = topText
-        cellBottomLabel.attributedText = bottomText
         
         let timeSize = CGSize(width: 14, height: cellTopLabel.frame.size.height)
         timeLabel.frame = CGRect(origin: timePoint, size: timeSize)
-        timeLabel.text = timeText
+        
+        switch message.data {
+        case .system(_):
+            cellTopLabel.attributedText = nil
+            timeLabel.text = ""
+        default:
+            cellTopLabel.attributedText = topText
+            timeLabel.text = timeText
+            cellBottomLabel.attributedText = bottomText
+            break
+        }
+        
+        
         timeLabel.sizeToFit()
         
         if dataSource.isFromCurrentSender(message: message) {

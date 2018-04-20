@@ -251,6 +251,7 @@ public extension MessagesLayoutDelegate {
         } else {
             return UIEdgeInsets(top: 7, left: 18, bottom: 7, right: 14)
         }
+        
     }
 
     // MARK: - Media Messages Defaults

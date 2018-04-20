@@ -69,4 +69,9 @@ struct MockMessage: MessageType {
         self.init(data: .emoji(emoji), sender: sender, messageId: messageId, date: date, dateString: dateString)
     }
 
+    
+    init(system: String, sender: Sender, messageId: String, date: Date, dateString:String) {
+        self.init(data: .system(system), sender: sender, messageId: messageId, date: date, dateString: dateString)
+    }
+    
 }

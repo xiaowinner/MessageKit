@@ -41,6 +41,7 @@ public struct AvatarPosition {
         /// The cell is positioned `.cellTrailling` if `isFromCurrentSender` is true
         /// and `.cellLeading` if false.
         case natural
+        
     }
     
     /// An enum representing the verical alignment for an `AvatarView`.

@@ -94,6 +94,13 @@ final class MessageIntermediateLayoutAttributes {
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
         
+        switch message.data {
+        case .system:
+            origin.x = messageContainerPadding.left
+        default:
+            break
+        }
+
         return CGRect(origin: origin, size: messageContainerSize)
         
     }()

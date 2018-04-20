@@ -299,8 +299,6 @@ extension ConversationViewController: MessagesDisplayDelegate {
 
     // MARK: - Text Messages
     
-    
-
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
         return isFromCurrentSender(message: message) ? .white : .darkText
     }
@@ -339,8 +337,16 @@ extension ConversationViewController: MessagesDisplayDelegate {
     }
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        
         let avatar = SampleData.shared.getAvatarFor(sender: message.sender)
         avatarView.set(avatar: avatar)
+        
+        switch message.data {
+        case .system(_):
+            avatarView.frame = .zero
+        default:
+            break
+        }
 //        avatarView.frame.origin.y = 0
     }
 
@@ -378,12 +384,17 @@ extension ConversationViewController: MessagesLayoutDelegate {
     func avatarPosition(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> AvatarPosition {
         return AvatarPosition(horizontal: .natural, vertical: .messageTop)
     }
-
+    
     func messagePadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
-        if isFromCurrentSender(message: message) {
-            return UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 12)
-        } else {
-            return UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 13)
+        switch message.data {
+        case .system:
+            return UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 12)
+        default:
+            if isFromCurrentSender(message: message) {
+                return UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 12)
+            } else {
+                return UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 13)
+            }
         }
     }
 

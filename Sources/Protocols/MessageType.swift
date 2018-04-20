@@ -46,5 +46,5 @@ public protocol MessageType {
     var data: MessageData { get }
     
     var userAvt:String { get }
-
+    
 }
