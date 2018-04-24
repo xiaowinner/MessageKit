@@ -97,6 +97,7 @@ final class MessageIntermediateLayoutAttributes {
         switch message.data {
         case .system:
             origin.x = messageContainerPadding.left
+            origin.y = messageContainerPadding.top
         default:
             break
         }

@@ -1,18 +1,18 @@
 /*
  MIT License
-
+ 
  Copyright (c) 2017-2018 MessageKit
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,9 +28,9 @@ import AVFoundation
 /// The layout object used by `MessagesCollectionView` to determine the size of all
 /// framework provided `MessageCollectionViewCell` subclasses.
 open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
-
+    
     // MARK: - Properties [Public]
-
+    
     /// Font to be used by `TextMessageCell` for `MessageData.text(String)` case.
     ///
     /// The default value of this property is `UIFont.preferredFont(forTextStyle: .body)`
@@ -39,7 +39,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
             emojiLabelFont = messageLabelFont.withSize(2 * messageLabelFont.pointSize)
         }
     }
-
+    
     /// Determines the maximum number of `MessageCollectionViewCell` attributes to cache.
     ///
     /// The default value of this property is 500.
@@ -56,7 +56,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     ///
     /// The default value of this property is 2x the `messageLabelFont`.
     private var emojiLabelFont: UIFont
-
+    
     typealias MessageID = String
     
     /// The cache for `MessageIntermediateLayoutAttributes`.
@@ -70,7 +70,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         }
         return messagesCollectionView
     }
-
+    
     /// Convenience property for unwrapping the `MessagesCollectionView`'s `MessagesDataSource`.
     fileprivate var messagesDataSource: MessagesDataSource {
         guard let messagesDataSource = messagesCollectionView.messagesDataSource else {
@@ -78,7 +78,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         }
         return messagesDataSource
     }
-
+    
     /// Convenience property for unwrapping the `MessagesCollectionView`'s `MessagesLayoutDelegate`.
     fileprivate var messagesLayoutDelegate: MessagesLayoutDelegate {
         guard let messagesLayoutDelegate = messagesCollectionView.messagesLayoutDelegate else {
@@ -86,42 +86,42 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         }
         return messagesLayoutDelegate
     }
-
+    
     /// The width of an item in the `MessageCollectionViewCell`.
     fileprivate var itemWidth: CGFloat {
         guard let collectionView = collectionView else { return 0 }
         return collectionView.frame.width - sectionInset.left - sectionInset.right
     }
-
+    
     // MARK: - Initializers [Public]
-
+    
     public override init() {
-
+        
         messageLabelFont = UIFont.preferredFont(forTextStyle: .body)
         emojiLabelFont = messageLabelFont.withSize(2 * messageLabelFont.pointSize)
-
+        
         super.init()
-
+        
         sectionInset = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(MessagesCollectionViewFlowLayout.handleOrientationChange(_:)), name: .UIDeviceOrientationDidChange, object: nil)
     }
-
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
+    
     /// Invalidates the layout and removes all cached attributes on device orientation change
     @objc
     private func handleOrientationChange(_ notification: Notification) {
         removeAllCachedAttributes()
         invalidateLayout()
     }
-
+    
     // MARK: - Methods [Public]
     
     /// Removes the cached layout information for a given `MessageType` using the `messageId`.
@@ -160,30 +160,30 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         flowLayoutContext.invalidateFlowLayoutDelegateMetrics = shouldInvalidateLayout(forBoundsChange: newBounds)
         return flowLayoutContext
     }
-
+    
     open override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-
+        
         guard let attributesArray = super.layoutAttributesForElements(in: rect) as? [MessagesCollectionViewLayoutAttributes] else { return nil }
-
+        
         attributesArray.forEach { attributes in
             if attributes.representedElementCategory == UICollectionElementCategory.cell {
                 configure(attributes: attributes)
             }
         }
-
+        
         return attributesArray
     }
-
+    
     open override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-
+        
         guard let attributes = super.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes else { return nil }
-
+        
         if attributes.representedElementCategory == UICollectionElementCategory.cell {
             configure(attributes: attributes)
         }
-
+        
         return attributes
-
+        
     }
     
     /// The size for the `MessageCollectionViewCell` considering all of the cell's contents.
@@ -194,7 +194,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let attributes = messageIntermediateLayoutAttributes(for: indexPath)
         return CGSize(width: itemWidth, height: attributes.itemHeight)
     }
-
+    
 }
 
 // MARK: - Calculating MessageIntermediateLayoutAttributes
@@ -213,7 +213,7 @@ fileprivate extension MessagesCollectionViewFlowLayout {
             return intermediateAttributes
         } else {
             let newAttributes = createMessageIntermediateLayoutAttributes(for: message, at: indexPath)
-
+            
             let shouldCache = messagesLayoutDelegate.shouldCacheLayoutAttributes(for: message) && intermediateAttributesCache.count < attributesCacheMaxSize
             
             if shouldCache {
@@ -279,7 +279,9 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         switch intermediateAttributes.message.data {
         case .emoji:
             attributes.messageLabelFont = emojiLabelFont
-        case .text, .system:
+        case .text:
+            attributes.messageLabelFont = messageLabelFont
+        case .system:
             attributes.messageLabelFont = UIFont.systemFont(ofSize: 15)
         case .attributedText(let text):
             guard let font = text.attribute(.font, at: 0, effectiveRange: nil) as? UIFont else { return }
@@ -287,9 +289,9 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         default:
             break
         }
-
+        
     }
-
+    
 }
 
 // MARK: - Avatar Calculations [ A - C ]
@@ -311,10 +313,10 @@ fileprivate extension MessagesCollectionViewFlowLayout {
         case .natural:
             position.horizontal = messagesDataSource.isFromCurrentSender(message: attributes.message) ? .cellTrailing : .cellLeading
         }
-
+        
         return position
     }
-
+    
     // B
     
     /// Returns the size of the `AvatarView` for a given `MessageType`.
@@ -485,31 +487,31 @@ private extension MessagesCollectionViewFlowLayout {
         let avatarHorizontal = attributes.avatarPosition.horizontal
         let avatarVertical = attributes.avatarPosition.vertical
         let avatarWidth = attributes.avatarSize.width
-
+        
         switch (labelHorizontal, avatarHorizontal) {
-
+            
         case (.cellLeading, _), (.cellTrailing, _):
             let width = itemWidth - attributes.bottomLabelHorizontalPadding
             return avatarVertical != .cellBottom ? width : width - avatarWidth
-
+            
         case (.cellCenter, _):
             let width = itemWidth - attributes.bottomLabelHorizontalPadding
             return avatarVertical != .cellBottom ? width : width - (avatarWidth * 2)
-
+            
         case (.messageTrailing, .cellLeading):
             let width = attributes.messageContainerSize.width + attributes.messageContainerPadding.left - attributes.bottomLabelHorizontalPadding
             return avatarVertical == .cellBottom ? width : width + avatarWidth
-
+            
         case (.messageLeading, .cellTrailing):
             let width = attributes.messageContainerSize.width + attributes.messageContainerPadding.right - attributes.bottomLabelHorizontalPadding
             return avatarVertical == .cellBottom ? width : width + avatarWidth
-
+            
         case (.messageLeading, .cellLeading):
             return itemWidth - avatarWidth - attributes.messageContainerPadding.left - attributes.bottomLabelHorizontalPadding
-
+            
         case (.messageTrailing, .cellTrailing):
             return itemWidth - avatarWidth - attributes.messageContainerPadding.right - attributes.bottomLabelHorizontalPadding
-
+            
         case (_, .natural):
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
@@ -529,7 +531,7 @@ private extension MessagesCollectionViewFlowLayout {
         guard let bottomLabelText = text else { return .zero }
         return labelSize(for: bottomLabelText, considering: attributes.bottomLabelMaxWidth)
     }
-
+    
 }
 
 // MARK: - Cell Top Label Size Calculations [ L - N ]
@@ -560,29 +562,29 @@ private extension MessagesCollectionViewFlowLayout {
         let avatarWidth = attributes.avatarSize.width
         
         switch (labelHorizontal, avatarHorizontal) {
-
+            
         case (.cellLeading, _), (.cellTrailing, _):
             let width = itemWidth - attributes.topLabelHorizontalPadding
             return avatarVertical != .cellTop ? width : width - avatarWidth
-
+            
         case (.cellCenter, _):
             let width = itemWidth - attributes.topLabelHorizontalPadding
             return avatarVertical != .cellTop ? width : width - (avatarWidth * 2)
-
+            
         case (.messageTrailing, .cellLeading):
             let width = attributes.messageContainerSize.width + attributes.messageContainerPadding.left - attributes.topLabelHorizontalPadding
             return avatarVertical == .cellTop ? width : width + avatarWidth
-
+            
         case (.messageLeading, .cellTrailing):
             let width = attributes.messageContainerSize.width + attributes.messageContainerPadding.right - attributes.topLabelHorizontalPadding
             return avatarVertical == .cellTop ? width : width + avatarWidth
-
+            
         case (.messageLeading, .cellLeading):
             return itemWidth - avatarWidth - attributes.messageContainerPadding.left - attributes.topLabelHorizontalPadding
-
+            
         case (.messageTrailing, .cellTrailing):
             return itemWidth - avatarWidth - attributes.messageContainerPadding.right - attributes.topLabelHorizontalPadding
-
+            
         case (_, .natural):
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
@@ -600,9 +602,9 @@ private extension MessagesCollectionViewFlowLayout {
         let text = messagesDataSource.cellTopLabelAttributedText(for: attributes.message, at: attributes.indexPath)
         
         guard let topLabelText = text else { return .zero }
-
+        
         return labelSize(for: topLabelText, considering: attributes.topLabelMaxWidth)
-
+        
     }
     
 }
@@ -621,12 +623,20 @@ private extension MessagesCollectionViewFlowLayout {
         
         var cellHeight: CGFloat = 0
         
+        
+        
         switch attributes.avatarPosition.vertical {
         case .cellTop:
-            cellHeight += max(attributes.avatarSize.height, attributes.topLabelSize.height)
-            cellHeight += attributes.bottomLabelSize.height
-            cellHeight += attributes.messageContainerSize.height
-            cellHeight += attributes.messageVerticalPadding
+            switch attributes.message.data {
+            case .system:
+                cellHeight += attributes.messageContainerSize.height
+                cellHeight += attributes.messageVerticalPadding
+            default:
+                cellHeight += max(attributes.avatarSize.height, attributes.topLabelSize.height) - 6
+                cellHeight += attributes.messageContainerSize.height
+            }
+            //            cellHeight += attributes.bottomLabelSize.height
+        //            cellHeight += attributes.messageVerticalPadding
         case .cellBottom:
             cellHeight += max(attributes.avatarSize.height, attributes.bottomLabelSize.height)
             cellHeight += attributes.topLabelSize.height
