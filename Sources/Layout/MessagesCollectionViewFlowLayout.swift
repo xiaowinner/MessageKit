@@ -431,7 +431,7 @@ private extension MessagesCollectionViewFlowLayout {
             messageContainerSize.width += attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
         case .system(let text):
-            messageContainerSize = labelSize(for: text, considering: maxWidth, and: messageLabelFont)
+            messageContainerSize = labelSize(for: text, considering: maxWidth, and: UIFont.systemFont(ofSize: 15))
             messageContainerSize.width = UIScreen.main.bounds.size.width - attributes.messageLabelHorizontalInsets
             messageContainerSize.height += attributes.messageLabelVerticalInsets
         case .attributedText(let text):
