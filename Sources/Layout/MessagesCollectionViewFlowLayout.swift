@@ -324,7 +324,12 @@ fileprivate extension MessagesCollectionViewFlowLayout {
     /// - Parameters:
     ///   - attributes: The `MessageIntermediateLayoutAttributes` containing the `MessageType` object.
     func avatarSize(for attributes: MessageIntermediateLayoutAttributes) -> CGSize {
-        return messagesLayoutDelegate.avatarSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        switch attributes.message.data {
+        case .system:
+            return CGSize.zero
+        default:
+            return messagesLayoutDelegate.avatarSize(for: attributes.message, at: attributes.indexPath, in: messagesCollectionView)
+        }
     }
     
 }
