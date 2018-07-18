@@ -253,6 +253,13 @@ class ConversationViewController: MessagesViewController {
                 print("Item Tapped")
         }
     }
+    
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        print(self.view.frame.size.height)
+//        print(scrollView.contentSize.height)
+//        print(scrollView.contentOffset.y)
+//    }
+    
 }
 
 // MARK: - MessagesDataSource

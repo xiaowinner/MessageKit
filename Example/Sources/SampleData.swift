@@ -34,10 +34,10 @@ final class SampleData {
     let messageTextValues = [
         "Ok",
         "k",
-        "lol",
-        "1-800-555-0000",
+        "lol,http://zentao.jdcf88.com/zentao/my-bug.html",
+        "1-800-555-0000,http://www.baidu.com",
         "One Infinite Loop Cupertino, CA 95014 This is some extra text that should not be detected.",
-        "This is an example of the date detector 11/11/2017. April 1st is April Fools Day. Next Friday is not Friday the 13th.",
+        "http://zhibo.hexun.com/10334/收到货This is an example of the date detector 11/11/2017. April 1st is April Fools Day. Next Friday is not Friday the 13th.",
         "https://github.com/SD10",
         "Check out this awesome UI library for Chat",
         "My favorite things in life don’t cost any money. It’s really clear that the most precious resource we all have is time.",
