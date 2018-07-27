@@ -431,11 +431,11 @@ extension ConversationViewController: MessagesLayoutDelegate {
     }
 
     // MARK: - Location Messages
-
     func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 200
     }
 
+    
 }
 
 // MARK: - MessageCellDelegate

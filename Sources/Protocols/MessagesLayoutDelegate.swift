@@ -185,6 +185,12 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// The default value returned by this method is `false`.
     func shouldCacheLayoutAttributes(for message: MessageType) -> Bool
 
+    //自定义行高
+    func heightForCustom(message: MessageType, messageDic:Dictionary<String, Any>, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    //自定义宽度
+    func widthForCustom(message: MessageType, messageDic:Dictionary<String, Any>, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
 }
 
 public extension MessagesLayoutDelegate {
@@ -271,8 +277,17 @@ public extension MessagesLayoutDelegate {
     }
 
     // MARK: - Location Messages Defaults
-
     func widthForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return maxWidth
     }
+    
+    //自定义
+    func heightForCustom(message: MessageType, messageDic: Dictionary<String, Any>, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 126
+    }
+    
+    func widthForCustom(message: MessageType, messageDic: Dictionary<String, Any>, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 126
+    }
+    
 }

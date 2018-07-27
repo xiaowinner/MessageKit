@@ -58,6 +58,11 @@ public enum MessageData {
     // 系统
     case system(String)
     
+    // 自定义
+    case custom(Dictionary<String, Any>)
+    
+
+    
     // MARK: - Not supported yet
 
 //    case audio(Data)

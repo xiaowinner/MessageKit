@@ -461,6 +461,10 @@ private extension MessagesCollectionViewFlowLayout {
         case .imageUrl:
             let width = messagesLayoutDelegate.widthForMedia(message: message, at: indexPath, with: maxWidth, in: messagesCollectionView)
             messageContainerSize = CGSize(width: width, height: 125)
+        case .custom(let dictionary):
+            let height = messagesLayoutDelegate.heightForCustom(message: message, messageDic: dictionary, at: indexPath, with: maxWidth, in: messagesCollectionView)
+            let width = messagesLayoutDelegate.widthForCustom(message: message, messageDic: dictionary, at: indexPath, with: maxWidth, in: messagesCollectionView)
+            messageContainerSize = CGSize(width: width, height: height)
         }
         
         return messageContainerSize

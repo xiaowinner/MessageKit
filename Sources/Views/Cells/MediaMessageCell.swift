@@ -29,7 +29,6 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open override class func reuseIdentifier() -> String { return "messagekit.cell.mediamessage" }
 
     // MARK: - Properties
-
     open lazy var playButtonView: PlayButtonView = {
         let playButtonView = PlayButtonView()
         return playButtonView
@@ -38,7 +37,6 @@ open class MediaMessageCell: MessageCollectionViewCell {
     open var imageView = UIImageView()
 
     // MARK: - Methods
-
     open func setupConstraints() {
         imageView.fillSuperview()
         playButtonView.centerInSuperview()
@@ -62,6 +60,8 @@ open class MediaMessageCell: MessageCollectionViewCell {
             imageView.image = image
             playButtonView.isHidden = false
         case .imageUrl(_):
+            playButtonView.isHidden = true
+        case .custom(_):
             playButtonView.isHidden = true
         default:
             break
