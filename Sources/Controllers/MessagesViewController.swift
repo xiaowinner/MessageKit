@@ -26,9 +26,6 @@ import UIKit
 
 open class MessagesViewController: UIViewController {
     
-    // MARK: - Properties [Public]
-
-    /// The `MessagesCollectionView` managed by the messages view controller object.
     open var messagesCollectionView = MessagesCollectionView()
 
     /// The `MessageInputBar` used as the `inputAccessoryView` in the view controller.
